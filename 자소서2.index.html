@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inarizaki Elite Manager | Jeonghyun</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================
+           1. DESIGN SYSTEM & GRADIENT BACKGROUND
+           ========================================== */
+        :root {
+            /* 이나리자키 컬러 팔레트 */
+            --color-black: #000000;
+            --color-gold: #D4AF37;
+            --color-gold-light: #f1d57e;
+            --color-white: #ffffff;
+            --color-card-bg: rgba(255, 255, 255, 0.05);
+            --transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* 요청사항: 검정 -> 금색 -> 흰색 그라데이션 */
+            background: linear-gradient(180deg, 
+                var(--color-black) 0%, 
+                var(--color-gold) 50%, 
+                var(--color-white) 100%);
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Pretendard', 'Poppins', sans-serif;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ==========================================
+           2. VOLLEYBALL ANIMATION (배구공 애니메이션)
+           ========================================== */
+        .vball-env {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .volleyball {
+            position: absolute;
+            font-size: 2.5rem;
+            opacity: 0.2;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            animation: bounceAndRotate 15s infinite ease-in-out;
+        }
+
+        /* 각각의 공에 다른 위치와 타이밍 부여 */
+        .ball1 { top: 10%; left: 5%; animation-delay: 0s; }
+        .ball2 { top: 40%; right: 10%; animation-delay: -5s; }
+        .ball3 { bottom: 20%; left: 15%; animation-delay: -10s; }
+        .ball4 { top: 70%; right: 20%; animation-delay: -2s; }
+
+        @keyframes bounceAndRotate {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            33% { transform: translate(50vw, 20vh) rotate(120deg) scale(1.2); }
+            66% { transform: translate(-20vw, 50vh) rotate(240deg) scale(0.8); }
+            100% { transform: translate(0, 0) rotate(360deg) scale(1); }
+        }
+
+        /* ==========================================
+           3. LAYOUT COMPONENTS
+           ========================================== */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        section {
+            padding: 120px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        section.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 카드 공통 스타일 */
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 24px;
+            padding: 40px;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* ==========================================
+           4. HERO SECTION
+           ========================================== */
+        #hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 1;
+            transform: none;
+        }
+
+        .hero-tag {
+            font-size: 1.2rem;
+            color: var(--color-gold);
+            letter-spacing: 0.5rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, var(--color-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-typing {
+            font-size: 2rem;
+            height: 2.5rem;
+            font-weight: 500;
+            color: #eee;
+        }
+
+        /* ==========================================
+           5. ABOUT & ATSUMU (CHOIAE) SECTION
+           ========================================== */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .atsumu-card {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(212, 175, 55, 0.2));
+            grid-column: span 2;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border: 2px solid var(--color-gold);
+        }
+
+        .atsumu-img {
+            width: 250px;
+            height: 250px;
+            border-radius: 20px;
+            background: #222;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        /* 미야 아츠무 사진 플레이스홀더를 이나리자키 저지 색상으로 표현 */
+        .atsumu-img::before {
+            content: 'NO.7';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            opacity: 0.3;
+        }
+
+        .atsumu-info h3 {
+            font-size: 1.8rem;
+            color: var(--color-gold);
+            margin-bottom: 15px;
+        }
+
+        .choiae-badge {
+            background: var(--color-gold);
+            color: #000;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        /* ==========================================
+           6. SKILLS (MANAGER STATS)
+           ========================================== */
+        .skill-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .skill-item {
+            position: relative;
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .skill-bar {
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-gold), #fff);
+            width: 0%;
+            transition: width 2s ease-out;
+        }
+
+        /* ==========================================
+           7. FAVORITES & DREAM
+           ========================================== */
+        .fav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .fav-item {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .fav-item i {
+            font-size: 3rem;
+            color: var(--color-gold);
+            margin-bottom: 20px;
+        }
+
+        .dream-content {
+            text-align: center;
+        }
+
+        .money-aura {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--color-gold);
+            text-shadow: 0 0 20px rgba(212, 175, 55, 0.6);
+            margin: 20px 0;
+        }
+
+        /* ==========================================
+           8. FOOTER
+           ========================================== */
+        footer {
+            padding: 60px 0;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .atsumu-card { flex-direction: column; text-align: center; }
+            .hero-title { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vball-env">
+        <div class="volleyball ball1">🏐</div>
+        <div class="volleyball ball2">🏐</div>
+        <div class="volleyball ball3">🏐</div>
+        <div class="volleyball ball4">🏐</div>
+    </div>
+
+    <section id="hero">
+        <div class="container">
+            <p class="hero-tag">Inarizaki Manager</p>
+            <h1 class="hero-title">Jeonghyun</h1>
+            <div class="hero-typing" id="typing"></div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <div class="profile-grid">
+                <div class="card atsumu-card">
+                    <div class="atsumu-img">
+                        </div>
+                    <div class="atsumu-info">
+                        <span class="choiae-badge">MY CHOIAE (최애)</span>
+                        <h3>미야 아츠무 (Miya Atsumu)</h3>
+                        <p>이나리자키 배구부의 최고의 세터. 그의 천재적인 실력과 승부욕을 서포트하는 것이 저의 가장 큰 기쁨입니다. "어제보다 오늘 더 나은 토스를 올린다"는 그의 마인드는 저의 레퍼런스입니다.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="color:var(--color-gold); margin-bottom:20px;">Manager Info</h3>
+                    <p><strong>이름:</strong> 오정현 (Jeonghyun)</p>
+                    <p><strong>역할:</strong> 이나리자키 고교 배구부 매니저</p>
+                    <p><strong>관심분야:</strong> 남자아이돌, 하이큐 보기</p>
+                    <p><strong>분위기:</strong> 압도적으로 돈이 많은 매니저</p>
+                </div>
+
+                <div class="card">
+                    <h3 style="color:var(--color-gold); margin-bottom:20px;">Habits</h3>
+                    <p><strong>취미:</strong> 음악 찾기/듣기, 책 읽기</p>
+                    <p><strong>좋아하는 것:</strong> 인터넷 서핑, 정주행</p>
+                    <p><strong>잘하는 것:</strong> 끝없는 덕질, 완결까지 정주행</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="container">
+            <div class="card">
+                <h2 style="font-size:2rem; margin-bottom:40px; text-align:center;">Manager Stats</h2>
+                <div class="skill-list">
+                    <div class="skill-item">
+                        <div class="skill-name"><span>덕질 (Fandom Depth)</span><span>99%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" data-width="99%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name"><span>정주행 (Binge-Watching)</span><span>95%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" data-width="95%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name"><span>음악 큐레이션 (Music Finding)</span><span>90%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" data-width="90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <div class="skill-name"><span>자본력 (Capital Power)</span><span>100%</span></div>
+                        <div class="skill-bar"><div class="skill-progress" data-width="100%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="favorites">
+        <div class="container">
+            <h2 style="font-size:2.5rem; color:#000; text-align:center; margin-bottom:50px;">My Favorites</h2>
+            <div class="fav-grid">
+                <div class="card fav-item">
+                    <i class="fas fa-volleyball-ball"></i>
+                    <h4>하이큐 보기</h4>
+                    <p>이나리자키의 승리를 지켜보는 시간</p>
+                </div>
+                <div class="card fav-item">
+                    <i class="fas fa-headphones"></i>
+                    <h4>음악 찾기</h4>
+                    <p>나만의 숨은 명곡 리스트업</p>
+                </div>
+                <div class="card fav-item">
+                    <i class="fas fa-book"></i>
+                    <h4>책 읽기</h4>
+                    <p>매니저의 내면을 채우는 독서</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="dream">
+        <div class="container">
+            <div class="card" style="text-align:center; background:rgba(255,255,255,0.9); color:#000;">
+                <h2 style="font-size:2.5rem; margin-bottom:20px;">My Future & Goals</h2>
+                <p style="font-size:1.2rem;">"서혜원 데리고 하이큐 정주행하기"</p>
+                <div class="money-aura">$$ MORE MONEY $$</div>
+                <p><strong>최종 목표:</strong> 돈 더 많이 벌어서 이나리자키 후원하기</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Made with AI & My Imagination | Inarizaki Manager Jeonghyun Portfolio</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. 타이핑 효과
+        const text = "그냥 오정현임!";
+        const typingElement = document.getElementById('typing');
+        let i = 0;
+
+        function type() {
+            if (i < text.length) {
+                typingElement.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(type, 150);
+            }
+        }
+        type();
+
+        // 2. 스크롤 애니메이션 (Intersection Observer)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                    
+                    // 스킬바 애니메이션 실행
+                    const progressBars = entry.target.querySelectorAll('.skill-progress');
+                    progressBars.forEach(bar => {
+                        bar.style.width = bar.getAttribute('data-width');
+                    });
+                }
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
